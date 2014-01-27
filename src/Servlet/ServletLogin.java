@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import persistence.Database;
 import Service.ServiceRequest;
 import Service.ServiceRest;
+import Service.ServiceUser;
 
 /**
  * Servlet implementation class ServletUserLogin
@@ -31,30 +32,38 @@ public class ServletLogin extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ServiceRequest ru = new ServiceRequest();
-		if(ru.hasParameters(request))
+		ServiceUser serviceUser = new ServiceUser();
+		if(serviceUser.checkLogin(request))
 		{
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			
-			ServiceRest serviceRest = new ServiceRest();
-			String token = serviceRest.getTokenByUserCredentials(username, password);
-			if(token != null)
-			{
-				request.getSession().setAttribute("user_name", username);
-				request.getSession().setAttribute("user_token", token);
-				
-				request.getRequestDispatcher("WEB-INF/jsp/JSPUserHome.jsp").forward(request, response);
-			}
-			else
-			{
-				request.setAttribute("loginInfo", "Innvalid username or password!");
-				request.getRequestDispatcher("WEB-INF/jsp/JSPUserLogin.jsp").forward(request, response);
-			}
+			response.sendRedirect("ServletHome");
 		}
 		else
 		{
-			request.getRequestDispatcher("WEB-INF/jsp/JSPUserLogin.jsp").forward(request, response);
+			ServiceRequest ru = new ServiceRequest();
+			if(ru.hasParameters(request))
+			{
+				String username = request.getParameter("username");
+				String password = request.getParameter("password");
+				
+				ServiceRest serviceRest = new ServiceRest();
+				String token = serviceRest.getTokenByUserCredentials(username, password);
+				if(token != null)
+				{
+					request.getSession().setAttribute("user_name", username);
+					request.getSession().setAttribute("user_token", token);
+					
+					response.sendRedirect("ServletHome");
+				}
+				else
+				{
+					request.setAttribute("loginInfo", "Innvalid username or password!");
+					request.getRequestDispatcher("WEB-INF/jsp/JSPUserLogin.jsp").forward(request, response);
+				}
+			}
+			else
+			{
+				request.getRequestDispatcher("WEB-INF/jsp/JSPUserLogin.jsp").forward(request, response);
+			}
 		}
 	}
 

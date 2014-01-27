@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import persistence.Database;
 import Service.ServiceRequest;
 import Service.ServiceRest;
+import Service.ServiceUser;
 
 /**
  * Servlet implementation class ServletHome
@@ -31,7 +32,15 @@ public class ServletHome extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getRequestDispatcher("WEB-INF/jsp/JSPUserHome.jsp").forward(request, response);
+		ServiceUser serviceUser = new ServiceUser();
+		if(serviceUser.checkLogin(request))
+		{
+			request.getRequestDispatcher("WEB-INF/jsp/JSPUserHome.jsp").forward(request, response);
+		}
+		else
+		{
+			response.sendRedirect("ServletLogin");
+		}
 	}
 
 	/**

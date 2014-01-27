@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import persistence.Database;
 import Service.ServiceRequest;
 import Service.ServiceRest;
+import Service.ServiceUser;
 
 /**
  * Servlet implementation class ServletMetering
@@ -31,12 +32,14 @@ public class ServletMetering extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String token = (String) request.getSession().getAttribute("user_token");
-		String username = (String) request.getSession().getAttribute("user_name");
-		if(token != null && username != null)
+		ServiceUser serviceUser = new ServiceUser();
+		if(serviceUser.checkLogin(request))
 		{
-			
 			request.getRequestDispatcher("WEB-INF/jsp/JSPUserMetering.jsp").forward(request, response);
+		}
+		else
+		{
+			response.sendRedirect("ServletLogin");
 		}
 	}
 

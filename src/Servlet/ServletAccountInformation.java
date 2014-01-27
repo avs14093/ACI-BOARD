@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import persistence.Database;
 import Service.ServiceRequest;
 import Service.ServiceRest;
+import Service.ServiceUser;
 
 /**
  * Servlet implementation class ServletAccountInformation
@@ -31,11 +32,14 @@ public class ServletAccountInformation extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ServiceRequest ru = new ServiceRequest();
-		String token = (String) request.getSession().getAttribute("user_token");
-		if(token != null)
+		ServiceUser serviceUser = new ServiceUser();
+		if(serviceUser.checkLogin(request))
 		{
 			request.getRequestDispatcher("WEB-INF/jsp/JSPUserAccountInformation.jsp").forward(request, response);
+		}
+		else
+		{
+			response.sendRedirect("ServletLogin");
 		}
 	}
 
